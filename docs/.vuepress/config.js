@@ -26,6 +26,7 @@ export default defineUserConfig({
           collapsible: false,
           children: [
             '/posts/first-post.md',
+            '/posts/deploy-log.md',
           ],
         },
       ],
