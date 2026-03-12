@@ -1,8 +1,9 @@
 // docs/.vuepress/config.js
 // 使用 VuePress 2 + 默认主题 + Vite 打包器
 import { defineUserConfig } from 'vuepress'
-import { defaultTheme } from '@vuepress/theme-default'
+//import { defaultTheme } from '@vuepress/theme-default'
 import { viteBundler } from '@vuepress/bundler-vite'
+import { plumeTheme } from 'vuepress-theme-plume'
 
 export default defineUserConfig({
   lang: 'zh-CN',
@@ -14,7 +15,7 @@ export default defineUserConfig({
   base: '/fouriers-blog/',
 
   // 显式指定主题
-  theme: defaultTheme({
+  theme: plumeTheme({
     navbar: [
       { text: '首页', link: '/' },
       { text: '文章', link: '/posts/' },
