@@ -29,6 +29,7 @@ export default defineUserConfig({
             '/posts/first-post.md',
             '/posts/deploy-log.md',
             '/posts/regulatory_custom_entry_deep_dive.md',
+            '/posts/overlay-debug-note.md',
           ],
         },
       ],
