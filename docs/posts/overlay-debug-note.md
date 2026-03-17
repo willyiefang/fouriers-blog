@@ -9,7 +9,7 @@ tags:
 
 ## Android overlay 为什么“有时候生效、有时候不生效”？——以 ASServiceCenterInfo 为例
 
-这篇笔记记录一次很典型的坑：**ASServiceCenterInfo 的 overlay 第一次改就生效，后来改同一个 overlay 却完全没反应**。表面看像玄学，实际上是「**用哪个 product 编**」的问题。
+这篇笔记记录一次卡住了半天的坑：**ASServiceCenterInfo 的 overlay 第一次改就生效，后面相同模式套用同一种overlay，java文件只读取了本地资源**。实际上，这是「**用哪个 product 编**」的问题。
 
 ---
 
@@ -169,7 +169,7 @@ m ASServiceCenterInfo -j48   # 或 mm ASServiceCenterInfo
 
 ---
 
-### 6. 一句话总结
+### 6. 总结
 
 > **Device overlay（`zrevo/e64_xx24-aozhou/overlay/S5518/...`）是绑在「具体项目 product」上的，不是绑在「底板 product」上的。  
 > 用哪个 product 编 ASServiceCenterInfo，就决定了这次 APK 是否会吃到那套 overlay。**
