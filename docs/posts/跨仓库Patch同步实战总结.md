@@ -1,15 +1,15 @@
 ---
 date: 2026-03-12
-title: 跨仓库 Patch 同步实战总结（内外网/子仓库到大仓库）
+title: 跨仓库 commit 同步总结（内外网/子仓库到大仓库）
 tags:
   - Git
   - Patch
   - 工程实践
 ---
 
-# 跨仓库 Patch 同步实战总结（内外网/子仓库到大仓库）
+# 跨仓库 commit 同步任务总结（内外网/子仓库到大仓库）
 
-这篇记录一次真实的补丁迁移过程：  
+这篇记录一次补丁迁移过程：  
 从一台服务器（内网、仓库 A）导出 patch，在另一台服务器（外网、仓库 B）应用，并处理了以下典型问题：
 
 - 正在编译时是否能打 patch
@@ -21,17 +21,7 @@ tags:
 
 ---
 
-## 1. 结论先行（最实用）
-
-- **format-patch/am 是跨仓库迁移最稳方案**（尤其两边网络不互通时）。
-- **不要在编译进行中打补丁**；建议停编或等编译结束。
-- `git am` 成功后 `git status` 可能是 clean，这是正常的（因为已经生成 commit）。
-- `git apply --check` 对“已打过的 patch”会失败，这是正常现象，不代表没打进去。
-- 子仓库 patch 应用到大仓时，用：`git am --directory=<子目录前缀> ...`
-
----
-
-## 2. 场景说明（本次）
+## 1. 问题描述（本次）
 
 - 29 服务器：源仓库（部分是独立仓库）
 - 16 服务器：目标仓库（其中 vendor 不是独立仓库）
@@ -40,9 +30,9 @@ tags:
 
 ---
 
-## 3. 标准流程模板（推荐直接复用）
+## 2. 标准流程模板（推荐直接复用）
 
-## 3.1 源仓库导出 patch
+## 2.1 源仓库导出 patch
 
 ### A) 导出最近 N 笔
 
@@ -64,7 +54,7 @@ git format-patch <old_commit>^..<new_commit> -o /tmp/patches_export
 
 ---
 
-## 3.2 打包并跨机器传输
+## 2.2 打包并跨机器传输
 
 在源机器：
 
@@ -89,7 +79,7 @@ tar xzf ~/patches_export.tgz -C ~
 
 ---
 
-## 3.3 目标仓库应用 patch
+## 2.3 目标仓库应用 patch
 
 先进入**正确的 git 根目录**：
 
@@ -112,7 +102,7 @@ git am ~/patches_export/*.patch
 
 ---
 
-## 4. 子仓库 -> 大仓库 的关键参数：`--directory`
+## 3. 子仓库 -> 大仓库 的关键参数：`--directory`
 
 当 patch 内文件路径是：
 
@@ -137,9 +127,9 @@ git am --directory=sprdroid13_vnd_main ~/patches_export/0001-*.patch
 
 ---
 
-## 5. 常见异常与处理
+## 4. 常见异常与处理
 
-## 5.1 `previous rebase-apply still exists`
+## 4.1 `previous rebase-apply still exists`
 
 说明上次 `git am` 被中断（如 Ctrl+C）。
 
@@ -149,7 +139,7 @@ git am --abort || git am --quit
 
 ---
 
-## 5.2 `Repository lacks necessary blobs to fall back on 3-way merge`
+## 4.2 `Repository lacks necessary blobs to fall back on 3-way merge`
 
 `git am -3` 无法三方合并（缺历史对象或基线差异）。可改走：
 
@@ -163,7 +153,7 @@ find . -name "*.rej"
 
 ---
 
-## 5.3 `git apply --check` 失败但怀疑已打入
+## 4.3 `git apply --check` 失败但怀疑已打入
 
 这种情况很常见（重复应用会失败）。验证方法：
 
@@ -177,14 +167,14 @@ git status
 
 ---
 
-## 5.4 `trailing whitespace` 警告
+## 4.4 `trailing whitespace` 警告
 
 通常只是告警，不是失败。  
 只要没有 `Patch failed` / `CONFLICT`，且流程走完，一般可忽略。
 
 ---
 
-## 6. 本次实战的高效操作顺序（可直接套）
+## 5. 本次实战的高效操作顺序（可直接套）
 
 1. 在源仓库 `git format-patch` 导出  
 2. 删除不需要的 patch 文件  
@@ -197,7 +187,7 @@ git status
 
 ---
 
-## 7. 一套最小命令清单（模板）
+## 6. 命令清单（模板）
 
 ```bash
 # 源仓库
