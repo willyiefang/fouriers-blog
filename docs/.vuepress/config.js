@@ -30,6 +30,7 @@ export default defineUserConfig({
             '/posts/deploy-log.md',
             '/posts/regulatory_custom_entry_deep_dive.md',
             '/posts/overlay-debug-note.md',
+            '/posts/跨仓库Patch同步实战总结.md',
           ],
         },
       ],
